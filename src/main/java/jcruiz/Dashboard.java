@@ -69,7 +69,7 @@ public class Dashboard extends JFrame {
 	 * @throws IOException
 	 */
 	public Dashboard() throws IOException, FontFormatException {
-			setPreferredSize(new Dimension(1024, 600));
+			setPreferredSize(new Dimension(10, 10));
 			setMinimumSize(new Dimension(10, 10));
 			setBackground(new Color(255, 255, 255));
 		setLocation(new Point(0, 0));
@@ -77,7 +77,6 @@ public class Dashboard extends JFrame {
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1082, 563);
 		contentPane = new JPanel();
-		contentPane.setPreferredSize(new Dimension(1024, 600));
 		contentPane.setBackground(new Color(255, 255, 255));
 		contentPane.setBorder(null);
 

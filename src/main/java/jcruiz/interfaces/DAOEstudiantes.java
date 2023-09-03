@@ -7,9 +7,9 @@ import jcruiz.models.Estudiantes;
 
 public interface DAOEstudiantes {
 
-    void registrar(Estudiantes estudiantes);
-    void modificar(Estudiantes estudiantes);
-    void eliminar(Estudiantes estudiantes);
+    void registrar(Estudiantes estudiante) throws SQLException;
+    void modificar(Estudiantes estudiante)throws SQLException;
+    void eliminar(Estudiantes estudiante)throws SQLException;
 
     List<Estudiantes> listar() throws SQLException;
 

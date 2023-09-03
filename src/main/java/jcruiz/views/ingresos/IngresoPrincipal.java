@@ -4,11 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.ComponentOrientation;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.Box;
@@ -30,13 +33,10 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumnModel;
 
-import jcruiz.DAOIngresosImpl;
 import jcruiz.Utilitario;
+import jcruiz.implementaciones.DAOIngresosImpl;
 import jcruiz.interfaces.DAOIngresos;
 import jcruiz.models.Ingresos;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.awt.Dimension;
 
 public class IngresoPrincipal extends JPanel {
 
@@ -129,8 +129,8 @@ public class IngresoPrincipal extends JPanel {
 	        btnNuevoIngreso.addActionListener(new ActionListener() {
 	        	public void actionPerformed(ActionEvent e) {
 	        		
-	        		JPanel panelComponente = new IngresosOperaciones().getPrincipal();
-	                principal.setSize(960,300);
+	        		JPanel panelComponente = new IngresoAsignarOperacion().getPrincipal();
+	               // principal.setSize(960,300);
 	                //principal.setLocation(0,0);
 	                principal.removeAll();
 	                principal.add(panelComponente,BorderLayout.CENTER);
@@ -233,7 +233,7 @@ public class IngresoPrincipal extends JPanel {
 	        //Se obtiene el total de las columnas
 	        for (int column = 0; column < table.getColumnCount(); column++) {
 	            //Establecemos un valor minimo para el ancho de la columna
-	            int width = 60; //Min Width
+	            int width = 100; //Min Width
 	            //Obtenemos el numero de filas de la tabla
 	            for (int row = 0; row < table.getRowCount(); row++) {
 	                //Obtenemos el renderizador de la tabla
@@ -256,6 +256,7 @@ public class IngresoPrincipal extends JPanel {
 
 
 	   private void InicioTabla() {
+	        tableIngresos.setForeground(new Color(61, 56, 70));
 
 
 	        tableIngresos.setModel(new DefaultTableModel(new Object[][]{
@@ -263,7 +264,7 @@ public class IngresoPrincipal extends JPanel {
 	                new String[]{
 	                        "P.Esc", "Id_ingresos", "Cedula", "Apellidos y Nombres", "Sexo", "Fech. Nac",  "Año Est", "Secc",  "Dirección", "Telefonos","Email", "Lugar Nac", "Condición Est", "Status", "Plantel Proced"
 	                }));
-	        tableIngresos.setRowMargin(1);
+	        tableIngresos.setRowMargin(4);
 	        tableIngresos.setShowGrid(true);
 
 	        tableIngresos.getTableHeader().setBackground(Color.decode("#3366FF"));
@@ -289,19 +290,18 @@ public class IngresoPrincipal extends JPanel {
 	        alinear.setHorizontalAlignment(SwingConstants.CENTER);
 	        tableIngresos.getColumnModel().getColumn(0).setCellRenderer(alinear);
 	        tableIngresos.getColumnModel().getColumn(1).setCellRenderer(alinear);
+	        tableIngresos.getColumnModel().getColumn(2).setCellRenderer(alinear);
 	        tableIngresos.getColumnModel().getColumn(4).setCellRenderer(alinear);
 	        tableIngresos.getColumnModel().getColumn(6).setCellRenderer(alinear);
 	        tableIngresos.getColumnModel().getColumn(7).setCellRenderer(alinear);
+	        tableIngresos.getColumnModel().getColumn(12).setCellRenderer(alinear);
+	        tableIngresos.getColumnModel().getColumn(13).setCellRenderer(alinear);
 
 
 
-	        //JScrollPanel1.setBackground(UIManager.getDefaults().getColor("white"));
 
 	        JScrollPanel1.setBackground(Color.decode("#FFFFFF"));
-
-
 	        JScrollPanel1.setViewportView(tableIngresos);
-
 	        tableIngresos.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 
 
@@ -340,19 +340,6 @@ public class IngresoPrincipal extends JPanel {
 	            System.out.println(e.getMessage());
 	        }
 	    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

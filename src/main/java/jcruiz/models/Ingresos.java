@@ -17,9 +17,9 @@ public class Ingresos extends Estudiantes {
     private String anoest;
     private String secion;
     private int cedularep; // Id de la table representantes
-    private Date fecha_ingreso;
+    private String fecha_ingreso;
     private String mes_ingreso;
-    private Date fechasistema;
+    private String fechasistema;
     private String reinscripcion;
     private Date fechareinscripcion;
     private String tipoinscripcion;
@@ -158,12 +158,12 @@ public class Ingresos extends Estudiantes {
         this.cedularep = cedularep;
     }
 
-    public Date getFecha_ingreso() {
+    public String getFecha_ingreso() {
         return fecha_ingreso;
     }
 
-    public void setFecha_ingreso(Date fecha_ingreso) {
-        this.fecha_ingreso = fecha_ingreso;
+    public void setFecha_ingreso(String string) {
+        this.fecha_ingreso = string;
     }
 
     public String getMes_ingreso() {
@@ -174,12 +174,12 @@ public class Ingresos extends Estudiantes {
         this.mes_ingreso = mes_ingreso;
     }
 
-    public Date getFechasistema() {
+    public String getFechasistema() {
         return fechasistema;
     }
 
-    public void setFechasistema(Date fechasistema) {
-        this.fechasistema = fechasistema;
+    public void setFechasistema(String string) {
+        this.fechasistema = string;
     }
 
     public String getReinscripcion() {

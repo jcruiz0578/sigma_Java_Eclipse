@@ -1,5 +1,5 @@
 
-package jcruiz;
+package jcruiz.implementaciones;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

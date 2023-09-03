@@ -1,4 +1,4 @@
-package jcruiz;
+package jcruiz.implementaciones;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -13,8 +13,51 @@ import jcruiz.models.Estudiantes;
 public class DAOEstudiantesImpl extends DbConnection implements DAOEstudiantes {
 
     @Override
-    public void registrar(Estudiantes estudiantes) {
+    public void registrar(Estudiantes estudiante) throws SQLException {
 
+       try {
+		
+    	   this.Conectar();
+           
+           PreparedStatement st;
+          
+           st = this.getConexion().prepareStatement("insert INTO estudiantes  (cedulaest, apellidosest, nombresest, sexoest, lateralidad, fnest, orden_nac, estado_nac, lugar_nac, estado_civil,"
+           		+ " direccionest, telefonosest, emailest, nombre_plantel) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);");
+           
+           //Double id = estudiante.getCedulaest();
+           
+           st.setDouble(1, estudiante.getCedulaest());
+           st.setString(2, estudiante.getApellidosest());
+           st.setString(3, estudiante.getNombresest());
+           st.setString(4, estudiante.getSexoest());
+           st.setString(5, estudiante.getLateralidad());
+           st.setString(6,   estudiante.getFnest());
+           st.setInt(7, estudiante.getOrden_nac());
+           st.setString(8, estudiante.getEstado_nac());
+           st.setString(9, estudiante.getLugar_nac());
+           st.setString(10, estudiante.getEstado_civil());
+           st.setString(11, estudiante.getDireccionest());
+           st.setString(12, estudiante.getTelefonoest());
+           st.setString(13, estudiante.getEmailest());
+           st.setString(14, estudiante.getNombre_plantel());
+           
+           st.executeUpdate();
+           st.close();
+           
+           this.Cerrar();
+    	   
+    	   
+    	   
+    	   
+       } catch (SQLException | ClassNotFoundException e) {
+           throw new RuntimeException(e);
+       } finally{
+            this.Cerrar();
+        }
+    	
+      
+    	
+    	
     }
 
     @Override
@@ -45,7 +88,7 @@ public class DAOEstudiantesImpl extends DbConnection implements DAOEstudiantes {
                 est.setNombresest(rs.getString("nombresest"));
                 est.setSexoest(rs.getString("sexoest"));
                 est.setLateralidad(rs.getString("lateralidad"));
-                est.setFnest(rs.getDate("fnest"));
+                est.setFnest(rs.getString("fnest"));
                 est.setOrden_nac(rs.getInt("orden_nac"));
                 est.setEstado_nac(rs.getString("estado_nac"));
                 est.setLugar_nac(rs.getString("lugar_nac"));

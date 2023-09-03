@@ -2,7 +2,6 @@ package jcruiz.models;
 
 
 import java.text.DecimalFormat;
-import java.util.Date;
 
 public class Estudiantes {
 
@@ -11,7 +10,7 @@ public class Estudiantes {
     private String nombresest;
     private String sexoest;
     private String lateralidad;
-    private Date fnest;
+    private String fnest;
     private int orden_nac;
     private String estado_nac;
     private String lugar_nac;
@@ -96,11 +95,11 @@ public class Estudiantes {
         this.lateralidad = lateralidad;
     }
 
-    public Date getFnest() {
+    public String getFnest() {
         return fnest;
     }
 
-    public void setFnest(Date fnest) {
+    public void setFnest(String fnest) {
         this.fnest = fnest;
     }
 
