@@ -30,7 +30,7 @@ public class Ingresos extends Estudiantes {
     private String nombre_plantel;
     private int num_reg;
     
-    private int[][] totalPRUEBA;
+    
 
 //    private String nombres_apellidos; // para enlazar con tabla estudintes
 
@@ -178,8 +178,8 @@ public class Ingresos extends Estudiantes {
         return fechasistema;
     }
 
-    public void setFechasistema(String string) {
-        this.fechasistema = string;
+    public void setFechasistema(String fechaSistema) {
+        this.fechasistema = fechaSistema;
     }
 
     public String getReinscripcion() {
@@ -256,13 +256,7 @@ public class Ingresos extends Estudiantes {
         this.num_reg = num_reg;
     }
 
-	public int[][] getTotalPRUEBA() {
-		return totalPRUEBA;
-	}
-
-	public void setTotalPRUEBA(int[][] totalPRUEBA) {
-		this.totalPRUEBA = totalPRUEBA;
-	}
+	
 
 
 }

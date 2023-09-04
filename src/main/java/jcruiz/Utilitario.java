@@ -1,6 +1,7 @@
 package jcruiz;
 
 
+
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -15,10 +16,23 @@ import javax.swing.JComboBox;
 import jcruiz.db.DbConnection;
 
 public class Utilitario {
+	private static String periodoescolar;
+		
+	
+	/*ALMACENA Y OBTIENE L PERIODO ESCOLAR ACTUAL*/
+	
+	public void setPeriodoescolar(String periodoescolar) {
+		Utilitario.periodoescolar = periodoescolar;
+		
+	}
+	
+	    public String getPeriodoescolar() {
+		return periodoescolar;
+	}
 
 
-
-        public Font tipoLetra(String tipoFont, int tamanoFont) throws IOException, FontFormatException {
+	    /* TIPO  Y TAMAÑO DE LETRAS  DE LA CARPETA FONT EN RESOURCES */
+		public Font tipoLetra(String tipoFont, int tamanoFont) throws IOException, FontFormatException {
 
 
             Font fuente;
@@ -37,7 +51,8 @@ public class Utilitario {
         }
         
         
-        
+        /*LLENA EL JCOMBOX  DE LOS PLANTELES*/
+		
         public void llenar_plantel(JComboBox<Object> combox) {
     		DbConnection bd = new DbConnection();
     		Statement st;
@@ -63,6 +78,7 @@ public class Utilitario {
     	}
         
         
+        /*LLENA EL JCOMBOX  DE LOS ESTADOS*/
         
         public void llenar_estados(JComboBox<Object> combox) {
         	DbConnection bd = new DbConnection();
@@ -87,6 +103,83 @@ public class Utilitario {
     		
     		
     	}
+
+
+        	/* OBTIENE EL MES DE LA FECHA DE INGRESO SUMINISTRADA*/
+		
+        public String obtenerMesIngreso(String fechaIns) {
+        	
+        	String mes = null;        
+
+            String valormes1 = fechaIns.substring(5, 7);
+
+            if (valormes1.equals("01")) {
+
+                mes = "ENERO";
+            }
+
+            if (valormes1.equals("02")) {
+
+                mes = "FEBRERO";
+
+            }
+
+            if (valormes1.equals("03")) {
+
+                mes = "MARZO";
+
+            }
+
+            if (valormes1.equals("04")) {
+
+                mes = "ABRIL";
+            }
+
+            if (valormes1.equals("05")) {
+
+                mes = "MAYO";
+
+            }
+            if (valormes1.equals("06")) {
+
+                mes = "JUNIO";
+            }
+
+            if (valormes1.equals("07")) {
+
+                mes = "JULIO";
+            }
+
+            if (valormes1.equals("08")) {
+
+                mes = "AGOSTO";
+            }
+
+            if (valormes1.equals("09")) {
+
+                mes = "SEPTIEMBRE";
+
+            }
+
+            if (valormes1.equals("10")) {
+
+                mes = "OCTUBRE";
+            }
+
+            if (valormes1.equals("11")) {
+
+                mes = "NOVIEMBRE";
+            }
+
+            if (valormes1.equals("12")) {
+
+                mes = "DICIEMBRE";
+            }
+
+        	
+			return mes;
+        	
+        }
         
       
     	        

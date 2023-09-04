@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import jcruiz.Utilitario;
 import jcruiz.db.DbConnection;
 import jcruiz.interfaces.DAOIngresos;
 import jcruiz.models.Ingresos;
@@ -46,6 +47,7 @@ public class DAOIngresosImpl extends DbConnection implements DAOIngresos {
             st.setString(16, ingreso.getFicha());
             st.setString(17, ingreso.getNombre_plantel());
             
+            
                       
             
             st.executeUpdate();
@@ -84,9 +86,11 @@ public class DAOIngresosImpl extends DbConnection implements DAOIngresos {
 		try {
 
 			this.Conectar();
+			
+			String periodoescolar = (new Utilitario().getPeriodoescolar()).trim();
 
 			PreparedStatement st = this.getConexion().prepareStatement(
-					"SELECT *  FROM  estudiantes,ingresos WHERE ingresos.periodoescolar =  '2023-2024' &&  estudiantes.cedulaest = ingresos.cedulaest   order by anoest, fnest DESC");
+					"SELECT *  FROM  estudiantes,ingresos WHERE ingresos.periodoescolar =  '" + periodoescolar + "' &&  estudiantes.cedulaest = ingresos.cedulaest   order by anoest, fnest DESC");
 			lista = new ArrayList<>();
 
 			ResultSet rs = st.executeQuery();

@@ -103,7 +103,7 @@ public class IngresosOperaciones extends JPanel {
 	private JRadioButton rdbtnSI;
 	private JRadioButton rdbtnNO;
 	private JPanel botonesDireccion;
-	private JTextField textField;
+	private JTextField textDireccionRep;
 	private JLabel lblNewLabel_7;
 	private JButton btnEliminar;
 	private JPanel superior;
@@ -117,8 +117,8 @@ public class IngresosOperaciones extends JPanel {
 	private JCheckBox chckbxNewCheckBox_4;
 	private JLabel lblNewLabel_10;
 	private JPanel panel;
-	private JTextField textField_1;
-	private DatePicker datePicker;
+	private JTextField textFicha;
+	private DatePicker dpFechaIngreso;
 	private JLabel lblNewLabel_11;
 	private JTextField textApellidosEst;
 	private JComboBox<Object> comboLateralidad;
@@ -135,6 +135,13 @@ public class IngresosOperaciones extends JPanel {
 		
 		Utilitario u = new Utilitario();
 		
+	//	String  prueba = Dashboard.periodoescolar;
+		
+		String  prueba = u.getPeriodoescolar();
+		
+		System.out.println("el periodo escolar es: "+ prueba);
+		
+				
 		u.llenar_plantel(comboPlantelProc);
 		u.llenar_estados(comboEstadoNac);
 
@@ -163,6 +170,33 @@ public class IngresosOperaciones extends JPanel {
 
 			}
 		});
+		
+		
+		
+		rdbtnSI.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (rdbtnSI.isSelected()) {
+
+		            String DIRECCION = textDireccionEst.getText();
+
+		            textDireccionRep.setText(DIRECCION);
+
+		        }else {
+		        	textDireccionRep.setText("");
+		        }
+			}
+		});
+
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 
 	}
 
@@ -274,18 +308,19 @@ public class IngresosOperaciones extends JPanel {
 		Estudiantes estudiante = new Estudiantes();
 
 		Double cedulaEst = Double.parseDouble(textCedula.getText());  
-		String apellidosEst = textApellidosEst.getText();
-		String nombresEst = textNombresEst.getText();
+		String apellidosEst = textApellidosEst.getText().toUpperCase();
+		String nombresEst = textNombresEst.getText().toUpperCase();
 		String sexoest = (String) comboSexoEst.getSelectedItem();
 		String lateralidad = (String)comboLateralidad.getSelectedItem();
 		String fechaNacimiento = dpFechaNac.getDateStringOrEmptyString();
 		int ordenNac = Integer.parseInt((String) comboOrdenNac.getSelectedItem());
 		String estadoNac = (String)comboEstadoNac.getSelectedItem();
-		String lugarNac = textLugarNac.getText();
+		String lugarNac = textLugarNac.getText().toUpperCase();
 		String estadoCivil = (String) comboEstadoCivil.getSelectedItem();
-		String direccionest = textDireccionEst.getText();
+		String direccionest = textDireccionEst.getText().toUpperCase();
 		String telefonosEst = textTelefonos.getText();
 		String emailest = textEmail.getText();
+		String nombrePlantel = (String) comboPlantelProc.getSelectedItem();
 		
 		estudiante.setCedulaest(cedulaEst);
 		estudiante.setApellidosest(apellidosEst);
@@ -300,58 +335,91 @@ public class IngresosOperaciones extends JPanel {
 		estudiante.setDireccionest(direccionest);
 		estudiante.setTelefonoest(telefonosEst);
 		estudiante.setEmailest(emailest);
-		estudiante.setNombre_plantel("LNB GRAL EN JEFE JOSE FCO BEMUDEZ");
+		estudiante.setNombre_plantel(nombrePlantel);
 
 		Representantes representante = new Representantes();
 
-		representante.setCedularep(16907373);
-		representante.setApellidosrep("RAMIREZ");
-		representante.setNombresrep("CHARLY");
-		representante.setSexorep("F");
-		representante.setParentescorep("mamacita");
-		representante.setDireccionrep("AQUI MISMITO");
-		representante.setTelefonosrep("0414-3338529");
-		representante.setEmailrep("charly@gmail.com");
-		representante.setTrabaja("SI");
-		representante.setLugartrabajo("MPPE");
-		representante.setSueldo("minimo");
+		int cedulaRep = Integer.parseInt(textCedularep.getText());
+		String apellidosRep = textApellidosRep.getText().toUpperCase();
+		String nombresRep = textNombresRep.getText().toUpperCase();
+		String sexoRep = (String) comboSexoRep.getSelectedItem();
+		String parentescoRep = (String) comboParentesco.getSelectedItem();
+		String direccionRep = textDireccionRep.getText();
+		String telefonosRep = textTelefonos.getText();
+		String emailRep = textEmailRep.getText();
+		String trabajaRep = (String) comboTrabaja.getSelectedItem();
+		String lugarTrabajoRep = textLugarTrabajo.getText();
+		String sueldoRep = (String) comboSueldo.getSelectedItem();
+		
+		representante.setCedularep(cedulaRep);
+		representante.setApellidosrep(apellidosRep);
+		representante.setNombresrep(nombresRep);
+		representante.setSexorep(sexoRep);
+		representante.setParentescorep(parentescoRep);
+		representante.setDireccionrep(direccionRep);
+		representante.setTelefonosrep(telefonosRep);
+		representante.setEmailrep(emailRep);
+		representante.setTrabaja(trabajaRep);
+		representante.setLugartrabajo(lugarTrabajoRep);
+		representante.setSueldo(sueldoRep);
 
-		// int cedularep = 16907373;
+		
 		int cedularep = representante.getCedularep();
-
+		
 		Ingresos ingreso = new Ingresos();
-
 		String CedulaF = estudiante.getCedulaestFormateada();
-
-		String id_ingreso = "2023-2024-" + CedulaF + "I";
-
+		
+		
+		String periodoescolar = (new Utilitario().getPeriodoescolar()).trim();
+		String id_ingreso =  periodoescolar + "-" + CedulaF + "I";
+		String condicionEst = (String) comboCondicionEst.getSelectedItem();
+		String materiaPendiente = (String) comboMp.getSelectedItem();
+		String annoEst = (String) comboAnoest.getSelectedItem();
+		String seccionEst = (String) comboSeccion.getSelectedItem();
+		String fechaIngreso = dpFechaIngreso.getDateStringOrEmptyString();
+					
+		String mesIngreso = (new Utilitario().obtenerMesIngreso(fechaIngreso));
+		
+		String fechaSistema = LocalDate.now().toString();
+		String observacion = textObservaciones.getText().toUpperCase();
+		//String inscriptor =;
+		String ficha = textFicha.getText();
+		
+		
 		ingreso.setId_ingreso(id_ingreso);
-		ingreso.setPeriodoescolar("2023-2024");
+		ingreso.setPeriodoescolar(periodoescolar);
 		ingreso.setCedulaest(cedulaEst);
-		ingreso.setCondicionest("REGULAR");
-		ingreso.setMateriapendiente("SI");
-		ingreso.setAnoest("1ER AÑO");
-		ingreso.setSecion("C");
+		ingreso.setCondicionest(condicionEst);
+		ingreso.setMateriapendiente(materiaPendiente);
+		ingreso.setAnoest(annoEst);
+		ingreso.setSecion(seccionEst);
 		ingreso.setCedularep(cedularep);
-		ingreso.setFecha_ingreso("2023-09-22");
-		ingreso.setMes_ingreso("SEPTIEMBRE");
-		ingreso.setFechasistema("2023-09-22");
+		ingreso.setFecha_ingreso(fechaIngreso);
+		ingreso.setMes_ingreso(mesIngreso);
+		ingreso.setFechasistema(fechaSistema);
 		ingreso.setStatus("I");
-		ingreso.setObservacion("PROBANDO SISTEMA");
+		ingreso.setObservacion(observacion);
 		ingreso.setInscriptor("MALLUYA");
-		ingreso.setFicha("125");
-		ingreso.setNombre_plantel("LNB GRAL EN JEFE JOSE FCO BEMUDEZ");
+		ingreso.setFicha(ficha);
+		ingreso.setNombre_plantel(nombrePlantel);
 
 		Viviendas vivienda = new Viviendas();
 
+		String tipoVia = (String) comboTipoVia.getSelectedItem();
+		String zonaUbicacion = (String) comboZonaUbicacion.getSelectedItem();
+		String tipoVivienda = (String) comboTipoVivienda.getSelectedItem();
+		String ubicacionVivienda = (String) comboUbicacionVivienda.getSelectedItem();
+		String condicionVivienda = (String) comboCondicionVivienda.getSelectedItem();
+		String condInfraestructura = (String) comboCondicionInfra.getSelectedItem();
+		
 		vivienda.setId_ingreso(id_ingreso);
-		vivienda.setTipovia("CALLE");
-		vivienda.setDireccionest("LECUMBERRY");
-		vivienda.setZonaubicacion("URBANA");
-		vivienda.setTipovivienda("RANCHO");
-		vivienda.setUbicacionvivienda("CASERIO");
-		vivienda.setCondicionvivienda("ARRIMADO");
-		vivienda.setInfraestructura("PAUPERRIMA");
+		vivienda.setTipovia(tipoVia);
+		vivienda.setDireccionest(direccionest);
+		vivienda.setZonaubicacion(zonaUbicacion);
+		vivienda.setTipovivienda(tipoVivienda);
+		vivienda.setUbicacionvivienda(ubicacionVivienda);
+		vivienda.setCondicionvivienda(condicionVivienda);
+		vivienda.setInfraestructura(condInfraestructura);
 
 	
 		
@@ -894,6 +962,7 @@ public class IngresosOperaciones extends JPanel {
 		content.add(textNombresRep, gbc_textNombresRep);
 
 		comboSexoRep = new JComboBox<Object>();
+		comboSexoRep.setModel(new DefaultComboBoxModel<Object>(new String[] {"N/A", "F", "M"}));
 		comboSexoRep.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Sexo:", TitledBorder.LEADING,
 				TitledBorder.TOP, null, new Color(51, 51, 51)));
 		comboSexoRep.setBackground(Color.WHITE);
@@ -1016,7 +1085,7 @@ public class IngresosOperaciones extends JPanel {
 		botonesDireccion.add(lblNewLabel_7, gbc_lblNewLabel_7);
 
 		rdbtnSI = new JRadioButton("SI");
-		rdbtnSI.setBackground(new Color(255, 255, 255));
+				rdbtnSI.setBackground(new Color(255, 255, 255));
 		rdbtnSI.setHorizontalAlignment(SwingConstants.RIGHT);
 		GridBagConstraints gbc_rdbtnSI = new GridBagConstraints();
 		gbc_rdbtnSI.anchor = GridBagConstraints.EAST;
@@ -1025,19 +1094,19 @@ public class IngresosOperaciones extends JPanel {
 		botonesDireccion.add(rdbtnSI, gbc_rdbtnSI);
 		buttonGroup.add(rdbtnSI);
 
-		textField = new JTextField();
-		textField.setFont(new Font("Dialog", Font.BOLD, 13));
-		textField.setColumns(10);
-		textField.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)),
+		textDireccionRep = new JTextField();
+		textDireccionRep.setFont(new Font("Dialog", Font.BOLD, 13));
+		textDireccionRep.setColumns(10);
+		textDireccionRep.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)),
 				"Direcci\u00F3n (URB/CALLE/SECTOR/VEREDA/N\u00B0CASA):", TitledBorder.LEADING, TitledBorder.TOP, null,
 				new Color(51, 51, 51)));
-		GridBagConstraints gbc_textField = new GridBagConstraints();
-		gbc_textField.gridwidth = 3;
-		gbc_textField.insets = new Insets(0, 0, 5, 5);
-		gbc_textField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_textField.gridx = 1;
-		gbc_textField.gridy = 18;
-		content.add(textField, gbc_textField);
+		GridBagConstraints gbc_textDireccionRep = new GridBagConstraints();
+		gbc_textDireccionRep.gridwidth = 3;
+		gbc_textDireccionRep.insets = new Insets(0, 0, 5, 5);
+		gbc_textDireccionRep.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textDireccionRep.gridx = 1;
+		gbc_textDireccionRep.gridy = 18;
+		content.add(textDireccionRep, gbc_textDireccionRep);
 
 		lblNewLabel_8 = new JLabel("                                       ");
 		GridBagConstraints gbc_lblNewLabel_8 = new GridBagConstraints();
@@ -1118,18 +1187,17 @@ public class IngresosOperaciones extends JPanel {
 		content.add(panel, gbc_panel);
 		panel.setLayout(new GridLayout(0, 2, 0, 0));
 
-		textField_1 = new JTextField();
-		textField_1.setColumns(8);
-		textField_1.setBorder(
+		textFicha = new JTextField();
+		textFicha.setColumns(8);
+		textFicha.setBorder(
 				new TitledBorder(new LineBorder(new Color(184, 207, 229)), "N\u00B0 FICHA DE INSCRIPCI\u00D3N:",
 						TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-		panel.add(textField_1);
+		panel.add(textFicha);
 
-		datePicker = new DatePicker();
-		datePicker.setBackground(new Color(255, 255, 255));
-		datePicker.setBorder(new TitledBorder(null, "FECHA DE INGRESO / EGRESO:", TitledBorder.LEADING,
-				TitledBorder.TOP, null, null));
-		panel.add(datePicker);
+		dpFechaIngreso = new DatePicker();
+		dpFechaIngreso.setBackground(new Color(255, 255, 255));
+		dpFechaIngreso.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "FECHA DE INGRESO:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		panel.add(dpFechaIngreso);
 
 		superior = new JPanel();
 		principal.add(superior, BorderLayout.NORTH);

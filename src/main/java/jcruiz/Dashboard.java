@@ -54,8 +54,9 @@ public class Dashboard extends JFrame {
 	    private JPanel content;
 	    private JPanel panel_bienvenido;
 	    private JLabel labelBienvenido;
-	    private JLabel lblNewLabel;
-
+	    private JLabel labelPeriodoEscolar;
+	    
+	    private String periodoescolar;
 
 
 
@@ -215,13 +216,13 @@ public class Dashboard extends JFrame {
 		labelBienvenido.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 48));
 		panel_bienvenido.add(labelBienvenido);
 		
-		lblNewLabel = new JLabel("PERIODO ESCOLAR : 2022-2023");
-		lblNewLabel.setVerticalAlignment(SwingConstants.BOTTOM);
-		lblNewLabel.setBackground(new Color(255, 255, 255));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNewLabel.setForeground(new Color(224, 27, 36));
-		lblNewLabel.setFont(new Font("Dialog", Font.BOLD, 22));
-		panel_bienvenido.add(lblNewLabel);
+		labelPeriodoEscolar = new JLabel("");
+		labelPeriodoEscolar.setVerticalAlignment(SwingConstants.BOTTOM);
+		labelPeriodoEscolar.setBackground(new Color(255, 255, 255));
+		labelPeriodoEscolar.setHorizontalAlignment(SwingConstants.RIGHT);
+		labelPeriodoEscolar.setForeground(new Color(224, 27, 36));
+		labelPeriodoEscolar.setFont(new Font("Dialog", Font.BOLD, 22));
+		panel_bienvenido.add(labelPeriodoEscolar);
 
 		JPanel header = new JPanel();
 		header.setMinimumSize(new Dimension(10, 80));
@@ -308,6 +309,15 @@ public class Dashboard extends JFrame {
 
 
 	 private void InicioShow(){
+		 
+		 periodoescolar = "2023-2024";
+		 Utilitario u = new Utilitario();
+		 u.setPeriodoescolar(periodoescolar);;
+		 
+		 String xperiodoescolarTexto = "PERIODO ESCOLAR : " + periodoescolar;
+		 labelPeriodoEscolar.setText(xperiodoescolarTexto);
+		 
+		 
 	       IngresoPrincipal ingresoPrincipal = new IngresoPrincipal();
 	       ingresoPrincipal.setMinimumSize(new Dimension(10, 10));
 	       ingresoPrincipal.getPrincipal().setMinimumSize(new Dimension(10, 10));
