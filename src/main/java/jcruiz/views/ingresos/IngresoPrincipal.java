@@ -3,7 +3,6 @@ package jcruiz.views.ingresos;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -12,13 +11,18 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.swing.Box;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -30,8 +34,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 
 import jcruiz.Utilitario;
 import jcruiz.implementaciones.DAOIngresosImpl;
@@ -50,8 +52,9 @@ public class IngresoPrincipal extends JPanel {
 	 private JTextField textCedula;
 	 private JComboBox<Object> comboStatus;
 	 private JComboBox<Object> comboAnoEst;
-	 private Component horizontalStrut;
 	 private JPanel principal;
+	 private JTextField textField;
+	 private Component horizontalStrut;
 
 	public JPanel getPrincipal() {
 		return principal;
@@ -81,15 +84,15 @@ public class IngresoPrincipal extends JPanel {
 
 	     InicioTabla();
 	      LoadIngresos();
-	        resizeColumnWidth(tableIngresos);
+	      new Utilitario().resizeColumnWidth(tableIngresos);
 
 	        JPanel botonera = new JPanel();
 	        botonera.setBackground(new Color(255, 255, 255));
 	        principal.add(botonera, BorderLayout.SOUTH);
 	        GridBagLayout gbl_botonera = new GridBagLayout();
-	        gbl_botonera.columnWidths = new int[]{100, 110, 92, 124, 0};
+	        gbl_botonera.columnWidths = new int[]{100, 110, 102, 92, 124, 0};
 	        gbl_botonera.rowHeights = new int[]{0, 0};
-	        gbl_botonera.columnWeights = new double[]{0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
+	        gbl_botonera.columnWeights = new double[]{0.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE};
 	        gbl_botonera.rowWeights = new double[]{0.0, Double.MIN_VALUE};
 	        botonera.setLayout(gbl_botonera);
 	        
@@ -117,42 +120,24 @@ public class IngresoPrincipal extends JPanel {
 	        gbc_comboStatus.gridy = 0;
 	        botonera.add(comboStatus, gbc_comboStatus);
 	        
+	        textField = new JTextField();
+	        textField.setFont(new Font("Dialog", Font.BOLD, 14));
+	        textField.setColumns(10);
+	        textField.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "- C\u00E9dula: -", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+	        GridBagConstraints gbc_textField = new GridBagConstraints();
+	        gbc_textField.fill = GridBagConstraints.HORIZONTAL;
+	        gbc_textField.insets = new Insets(0, 0, 0, 5);
+	        gbc_textField.gridx = 2;
+	        gbc_textField.gridy = 0;
+	        botonera.add(textField, gbc_textField);
+	        
 	        horizontalStrut = Box.createHorizontalStrut(20);
 	        GridBagConstraints gbc_horizontalStrut = new GridBagConstraints();
 	        gbc_horizontalStrut.fill = GridBagConstraints.HORIZONTAL;
 	        gbc_horizontalStrut.insets = new Insets(0, 0, 0, 5);
-	        gbc_horizontalStrut.gridx = 2;
+	        gbc_horizontalStrut.gridx = 3;
 	        gbc_horizontalStrut.gridy = 0;
 	        botonera.add(horizontalStrut, gbc_horizontalStrut);
-
-	        JButton btnNuevoIngreso = new JButton("- Ingresar Nuevo -");
-	        btnNuevoIngreso.addActionListener(new ActionListener() {
-	        	public void actionPerformed(ActionEvent e) {
-	        		
-	        		JPanel panelComponente = new IngresoAsignarOperacion().getPrincipal();
-	               // principal.setSize(960,300);
-	                //principal.setLocation(0,0);
-	                principal.removeAll();
-	                principal.add(panelComponente,BorderLayout.CENTER);
-	                principal.revalidate();
-	                principal.repaint();
-
-	        		
-	        		
-	        		
-	        		
-	        	}
-	        });
-	        btnNuevoIngreso.setBorder(UIManager.getBorder("RootPane.frameBorder"));
-	        btnNuevoIngreso.setFont(new Font("Dialog", Font.PLAIN, 16));
-	        btnNuevoIngreso.setForeground(new Color(255, 255, 255));
-	        btnNuevoIngreso.setBackground(new Color(50, 101, 255));
-	        btnNuevoIngreso.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-	        GridBagConstraints gbc_btnNuevoIngreso = new GridBagConstraints();
-	        gbc_btnNuevoIngreso.anchor = GridBagConstraints.SOUTHEAST;
-	        gbc_btnNuevoIngreso.gridx = 3;
-	        gbc_btnNuevoIngreso.gridy = 0;
-	        botonera.add(btnNuevoIngreso, gbc_btnNuevoIngreso);
 
 	        panel = new JPanel();
 	        panel.setBackground(new Color(255, 255, 255));
@@ -178,6 +163,7 @@ public class IngresoPrincipal extends JPanel {
 	        panel.add(lblNewLabel, gbc_lblNewLabel);
 
 	        textCedula = new JTextField();
+	        textCedula.setHorizontalAlignment(SwingConstants.RIGHT);
 	        textCedula.setFont(new Font("Dialog", Font.BOLD, 14));
 	        textCedula.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "- C\u00E9dula: -", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 	        GridBagConstraints gbc_textCedula = new GridBagConstraints();
@@ -189,17 +175,30 @@ public class IngresoPrincipal extends JPanel {
 	        panel.add(textCedula, gbc_textCedula);
 	        textCedula.setColumns(10);
 
-	        JButton btnBuscarCedula = new JButton("- Buscar -");
-	        btnBuscarCedula.setFont(new Font("Dialog", Font.PLAIN, 16));
-	        btnBuscarCedula.setBorder(UIManager.getBorder("RootPane.frameBorder"));
-	        btnBuscarCedula.setForeground(new Color(255, 255, 255));
-	        btnBuscarCedula.setBackground(new Color(50, 101, 255));
-	        GridBagConstraints gbc_btnBuscarCedula = new GridBagConstraints();
-	        gbc_btnBuscarCedula.anchor = GridBagConstraints.SOUTHWEST;
-	        gbc_btnBuscarCedula.insets = new Insets(0, 0, 0, 5);
-	        gbc_btnBuscarCedula.gridx = 1;
-	        gbc_btnBuscarCedula.gridy = 1;
-	        panel.add(btnBuscarCedula, gbc_btnBuscarCedula);
+	        JButton btnOperaciones = new JButton("- Operaciones -");
+	        btnOperaciones.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		
+	        			        		
+	        		Double cedulaEst = Double.parseDouble(textCedula.getText());
+	        		
+	        		ObtencionCedulaEnviar(cedulaEst);
+	        		
+	        		
+	        			
+	        		
+	        	}
+	        });
+	        btnOperaciones.setFont(new Font("Dialog", Font.PLAIN, 16));
+	        btnOperaciones.setBorder(UIManager.getBorder("RootPane.frameBorder"));
+	        btnOperaciones.setForeground(new Color(255, 255, 255));
+	        btnOperaciones.setBackground(new Color(50, 101, 255));
+	        GridBagConstraints gbc_btnOperaciones = new GridBagConstraints();
+	        gbc_btnOperaciones.anchor = GridBagConstraints.SOUTHWEST;
+	        gbc_btnOperaciones.insets = new Insets(0, 0, 0, 5);
+	        gbc_btnOperaciones.gridx = 1;
+	        gbc_btnOperaciones.gridy = 1;
+	        panel.add(btnOperaciones, gbc_btnOperaciones);
 
 	        JButton btnAsignarSeccion = new JButton("- Asignar -");
 	        btnAsignarSeccion.setFont(new Font("Dialog", Font.PLAIN, 16));
@@ -227,39 +226,38 @@ public class IngresoPrincipal extends JPanel {
 	}
 
 
-	   private void resizeColumnWidth(JTable table) {
-	        //Se obtiene el modelo de la columna
-	        TableColumnModel columnModel = table.getColumnModel();
-	        //Se obtiene el total de las columnas
-	        for (int column = 0; column < table.getColumnCount(); column++) {
-	            //Establecemos un valor minimo para el ancho de la columna
-	            int width = 100; //Min Width
-	            //Obtenemos el numero de filas de la tabla
-	            for (int row = 0; row < table.getRowCount(); row++) {
-	                //Obtenemos el renderizador de la tabla
-	                TableCellRenderer renderer = table.getCellRenderer(row, column);
-	                //Creamos un objeto para preparar el renderer
-	                Component comp = table.prepareRenderer(renderer, row, column);
-	                //Establecemos el width segun el valor maximo del ancho de la columna
-	                width = Math.max(comp.getPreferredSize().width + 1, width);
-
-	            }
-	            //Se establece una condicion para no sobrepasar el valor de 300
-	            //Esto es Opcional
-//	            if (width > 960) {
-//	                width = 960;
-//	            }
-	            //Se establece el ancho de la columna
-	            columnModel.getColumn(column).setPreferredWidth(width);
-	        }
-	    }
+	   
+	
+	
 
 
 	   private void InicioTabla() {
+	    
+	        tableIngresos.addMouseListener(new MouseAdapter() {
+	        	@Override
+	        	public void mouseClicked(MouseEvent e) {
+	        		
+	        		 tableDatosMouseClicked(e);
+	        		
+	        		
+	        		
+	        		
+	        		
+	        	}
+
+				
+	        });
+	        
+	        
+	        
+	        
 	        tableIngresos.setForeground(new Color(61, 56, 70));
 
 
 	        tableIngresos.setModel(new DefaultTableModel(new Object[][]{
+	        	
+	        	
+	        	
 	        },
 	                new String[]{
 	                        "P.Esc", "Id_ingresos", "Cedula", "Apellidos y Nombres", "Sexo", "Fech. Nac",  "Año Est", "Secc",  "Dirección", "Telefonos","Email", "Lugar Nac", "Condición Est", "Status", "Plantel Proced"
@@ -270,7 +268,8 @@ public class IngresoPrincipal extends JPanel {
 	        tableIngresos.getTableHeader().setBackground(Color.decode("#3366FF"));
 	        tableIngresos.getTableHeader().setForeground(Color.white);
 	        tableIngresos.getTableHeader().setFont(new Font("Roboto", Font.BOLD, 14));
-	        tableIngresos.setEnabled(false);
+	        ;
+	        
 
 	        Utilitario u = new Utilitario();
 	        String tipoFont = "Roboto-Bold";
@@ -303,10 +302,88 @@ public class IngresoPrincipal extends JPanel {
 	        JScrollPanel1.setBackground(Color.decode("#FFFFFF"));
 	        JScrollPanel1.setViewportView(tableIngresos);
 	        tableIngresos.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+	        
+	        tableIngresos.setDefaultEditor(Object.class, null); // celdas no editable
 
 
 
 	    }
+	   
+	   
+	   private void tableDatosMouseClicked(MouseEvent e) {
+			 if (e.getClickCount() == 2) {
+  	            // primero, obtengo la fila seleccionada
+  	            int fila1 = tableIngresos.getSelectedRow();
+  	            String cedula = String.valueOf(tableIngresos.getValueAt(fila1, 2));
+  	            //System.out.println("La cedula clicliada es: "+ cedula);
+  	            
+  	          Double cedulaEst = Double.parseDouble(cedula);
+      		
+      		ObtencionCedulaEnviar(cedulaEst);
+      		
+  	            
+  	            
+  	            
+  		 }
+
+			
+		}
+	   
+	   
+	   
+	   
+	   
+	   private void ObtencionCedulaEnviar(Double cedulaEst) {
+		   
+		   DAOIngresos dao = new DAOIngresosImpl();
+   		
+   		
+   		try {
+				//Double comprobarCedula = dao.getIdCed(cedulaEst).getCedulaest();
+   			List<Ingresos> comprobarCedula = dao.listarHistorial(cedulaEst);
+   		
+					
+				if (comprobarCedula.isEmpty()) {
+					JOptionPane.showMessageDialog(this,"ESTE ESTUDIANTE CON CÉDULA:  " + cedulaEst.intValue() + "  NO ESTA REGISTRADO", "ERROR..",JOptionPane.ERROR_MESSAGE);
+					
+					 int confirmado = JOptionPane.showConfirmDialog(this, "¿QUIERE REGISTRAR A ESTE ESTUDIANTE?", "SELECCIONE UNA OPCIÓN", JOptionPane.YES_NO_OPTION);
+			            if (JOptionPane.NO_OPTION == confirmado) {
+			            	textCedula.setText("");
+							textCedula.requestFocusInWindow(); 
+							return;
+			            }else {
+			            	JPanel panelComponente = new IngresosOperaciones(null,false).getPrincipal();
+							principal.removeAll();
+							principal.add(panelComponente,BorderLayout.CENTER);
+							principal.revalidate();
+							principal.repaint();
+						}
+					
+					
+					
+					
+					
+				} else {
+				
+					JPanel panelComponente = new IngresoAsignarOperacion(cedulaEst).getPrincipal();
+					principal.removeAll();
+					principal.add(panelComponente,BorderLayout.CENTER);
+					principal.revalidate();
+					principal.repaint();
+		                
+					
+				}
+					
+   		
+   		} catch (SQLException e1) {
+				
+   			System.out.println(e1.getMessage());
+			}
+   		
+		   
+	   }
+	   
+	   
 
 
 	   private void LoadIngresos() {

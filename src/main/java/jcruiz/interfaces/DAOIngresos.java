@@ -16,6 +16,15 @@ public interface DAOIngresos {
 
     List<Ingresos> listar() throws SQLException;
     
+    List<Ingresos> listarHistorial(Double Cedulaest) throws SQLException;
+    
+   //Buscar datos del Estudiante
+    public Ingresos getIdCed(Double Cedulaest) throws SQLException;
+    
+    // comprobación de petenencia al año escolar actual
+    public Ingresos getComprobacionPeriodoescolar(Double Cedulaest, String periodoEscolarActual) throws SQLException;
+    
+    
  
     
     

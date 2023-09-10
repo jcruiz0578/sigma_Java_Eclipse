@@ -53,8 +53,7 @@ public class Dashboard extends JFrame {
 	    private JPanel contentPane;
 	    private JPanel content;
 	    private JPanel panel_bienvenido;
-	    private JLabel labelBienvenido;
-	    private JLabel labelPeriodoEscolar;
+	    private JLabel textPeriodoEscolar;
 	    
 	    private String periodoescolar;
 
@@ -153,7 +152,7 @@ public class Dashboard extends JFrame {
 						menu.add(btnMatricula);
 		
 				
-						btnInscripcion = new JButton("Inscripción");
+						btnInscripcion = new JButton("Operaciones");
 				btnInscripcion.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						
@@ -169,7 +168,7 @@ public class Dashboard extends JFrame {
 				btnInscripcion.setBorderPainted(false);
 				btnInscripcion.setIconTextGap(7);
 				btnInscripcion.setFocusable(false);
-				btnInscripcion.setIcon(new ImageIcon(Dashboard.class.getResource("/Imagenes/Notepad32.png")));
+				btnInscripcion.setIcon(new ImageIcon(Dashboard.class.getResource("/Imagenes/wheel.png")));
 				btnInscripcion.setHorizontalAlignment(SwingConstants.LEFT);
 				btnInscripcion.setForeground(Color.WHITE);
 				btnInscripcion.setFont(new Font("RobotoLight", Font.BOLD, 22));
@@ -199,30 +198,21 @@ public class Dashboard extends JFrame {
 		panel_bienvenido = new JPanel();
 		panel_bienvenido.setBackground(new Color(255, 255, 255));
 		GridBagConstraints gbc_panel_bienvenido = new GridBagConstraints();
+		gbc_panel_bienvenido.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panel_bienvenido.anchor = GridBagConstraints.SOUTH;
 		gbc_panel_bienvenido.insets = new Insets(0, 0, 5, 0);
-		gbc_panel_bienvenido.fill = GridBagConstraints.HORIZONTAL;
 		gbc_panel_bienvenido.gridx = 1;
 		gbc_panel_bienvenido.gridy = 0;
 		contentPane.add(panel_bienvenido, gbc_panel_bienvenido);
-		panel_bienvenido.setLayout(new GridLayout(1, 0, 0, 0));
+		panel_bienvenido.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		labelBienvenido = new JLabel("Bienvenidos");
-		labelBienvenido.setVerticalAlignment(SwingConstants.BOTTOM);
-		labelBienvenido.setBackground(new Color(255, 255, 255));
-		labelBienvenido.setVerticalTextPosition(SwingConstants.BOTTOM);
-		labelBienvenido.setHorizontalAlignment(SwingConstants.LEFT);
-		labelBienvenido.setForeground(new Color(119, 118, 123));
-		labelBienvenido.setFont(new Font("Segoe UI Semilight", Font.PLAIN, 48));
-		panel_bienvenido.add(labelBienvenido);
-		
-		labelPeriodoEscolar = new JLabel("");
-		labelPeriodoEscolar.setVerticalAlignment(SwingConstants.BOTTOM);
-		labelPeriodoEscolar.setBackground(new Color(255, 255, 255));
-		labelPeriodoEscolar.setHorizontalAlignment(SwingConstants.RIGHT);
-		labelPeriodoEscolar.setForeground(new Color(224, 27, 36));
-		labelPeriodoEscolar.setFont(new Font("Dialog", Font.BOLD, 22));
-		panel_bienvenido.add(labelPeriodoEscolar);
+		textPeriodoEscolar = new JLabel("");
+		textPeriodoEscolar.setBorder(new EmptyBorder(0, 0, 0, 5));
+		textPeriodoEscolar.setBackground(new Color(255, 255, 255));
+		textPeriodoEscolar.setHorizontalAlignment(SwingConstants.RIGHT);
+		textPeriodoEscolar.setForeground(new Color(224, 27, 36));
+		textPeriodoEscolar.setFont(new Font("Dialog", Font.BOLD, 22));
+		panel_bienvenido.add(textPeriodoEscolar);
 
 		JPanel header = new JPanel();
 		header.setMinimumSize(new Dimension(10, 80));
@@ -310,12 +300,12 @@ public class Dashboard extends JFrame {
 
 	 private void InicioShow(){
 		 
-		 periodoescolar = "2023-2024";
+		 periodoescolar = "2022-2023";
 		 Utilitario u = new Utilitario();
 		 u.setPeriodoescolar(periodoescolar);;
 		 
 		 String xperiodoescolarTexto = "PERIODO ESCOLAR : " + periodoescolar;
-		 labelPeriodoEscolar.setText(xperiodoescolarTexto);
+		 textPeriodoEscolar.setText(xperiodoescolarTexto);
 		 
 		 
 	       IngresoPrincipal ingresoPrincipal = new IngresoPrincipal();
@@ -345,6 +335,9 @@ private void establecerFuentes() throws IOException, FontFormatException {
      labelSIGMA.setForeground(Color.white);
      
      tipoFont = "segoeuisl";
+     
+     textPeriodoEscolar.setFont(u.tipoLetra(tipoFont,28));
+     
 
      tipoFont = "Roboto-Bold";
 

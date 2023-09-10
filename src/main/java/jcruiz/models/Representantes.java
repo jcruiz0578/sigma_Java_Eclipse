@@ -1,5 +1,7 @@
 package jcruiz.models;
 
+import java.text.DecimalFormat;
+
 public class Representantes {
 	
 	private int cedularep;
@@ -17,6 +19,24 @@ public class Representantes {
 	public int getCedularep() {
 		return cedularep;
 	}
+	
+	
+	 public String getCedulaestFormateada(){
+
+	        int cedulaformateada = getCedularep();
+
+	        DecimalFormat formato = new DecimalFormat("#");
+
+	        return formato.format(cedulaformateada);
+
+	    }
+	
+	
+	
+	
+	
+	
+	
 	public void setCedularep(int cedularep) {
 		this.cedularep = cedularep;
 	}

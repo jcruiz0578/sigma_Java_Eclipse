@@ -553,7 +553,7 @@ public class MatriculaGeneral extends JPanel {
 				
 
 				res = st.executeQuery(
-						"SELECT COUNT(sexoest)  FROM  estudiantes,ingresos WHERE ingresos.periodoescolar =  '2023-2024' && anoest = '"
+						"SELECT COUNT(sexoest)  FROM  estudiantes,ingresos WHERE ingresos.periodoescolar =  '2022-2023' && anoest = '"
 								+ anno + "'   &&  sexoest = '" + sexo
 								+ "' && status ='I'  &&  estudiantes.cedulaest = ingresos.cedulaest");
 				res.next();

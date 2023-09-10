@@ -1,6 +1,7 @@
 package jcruiz.implementaciones;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import jcruiz.db.DbConnection;
@@ -58,6 +59,59 @@ public class DAORepresentantesImpl extends DbConnection implements DAORepresenta
 	@Override
 	public void modificar(Representantes representante) {
 		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Representantes getIdCed(int CedulaRep) throws SQLException {
+		
+		
+		Representantes representante = new Representantes();
+		try {
+
+			this.Conectar();
+			
+			
+
+			PreparedStatement st = this.getConexion().prepareStatement(
+					"SELECT *  FROM  representantes WHERE cedularep = '" + CedulaRep + "' ");
+		
+			ResultSet rs = st.executeQuery();
+			while (rs.next()) {
+				
+				
+				representante.setCedularep(rs.getInt("cedularep"));
+				representante.setApellidosrep(rs.getString("apellidosrep"));
+				representante.setNombresrep(rs.getString("nombresrep"));
+				representante.setSexorep(rs.getString("sexorep"));
+				representante.setParentescorep(rs.getString("parentescorep"));
+				representante.setDireccionrep(rs.getString("direccionrep"));
+				representante.setTelefonosrep(rs.getString("telefonosrep"));
+				representante.setEmailrep(rs.getString("emailrep"));
+				representante.setTrabaja(rs.getString("trabaja"));
+				representante.setLugartrabajo(rs.getString("lugartrabajo"));
+				representante.setSueldo(rs.getString("sueldo"));
+				
+				
+			}
+
+			rs.close();
+			st.close();
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			throw new RuntimeException(e);
+
+		} finally {
+			this.Cerrar();
+		}
+
+		return representante;
+
+		
+		
+		
+		
 		
 	}
 

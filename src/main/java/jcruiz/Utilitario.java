@@ -2,6 +2,7 @@ package jcruiz;
 
 
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -12,6 +13,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumnModel;
 
 import jcruiz.db.DbConnection;
 
@@ -182,7 +186,34 @@ public class Utilitario {
         }
         
       
-    	        
+ public   void resizeColumnWidth(JTable table) {
+     //Se obtiene el modelo de la columna
+     TableColumnModel columnModel = table.getColumnModel();
+     //Se obtiene el total de las columnas
+     for (int column = 0; column < table.getColumnCount(); column++) {
+         //Establecemos un valor minimo para el ancho de la columna
+         int width = 100; //Min Width
+         //Obtenemos el numero de filas de la tabla
+         for (int row = 0; row < table.getRowCount(); row++) {
+             //Obtenemos el renderizador de la tabla
+             TableCellRenderer renderer = table.getCellRenderer(row, column);
+             //Creamos un objeto para preparar el renderer
+             Component comp = table.prepareRenderer(renderer, row, column);
+             //Establecemos el width segun el valor maximo del ancho de la columna
+             width = Math.max(comp.getPreferredSize().width + 1, width);
+
+         }
+         //Se establece una condicion para no sobrepasar el valor de 300
+         //Esto es Opcional
+//         if (width > 960) {
+//             width = 960;
+//         }
+         //Se establece el ancho de la columna
+         columnModel.getColumn(column).setPreferredWidth(width);
+     }
+
+	 
+ }
 
 
 }

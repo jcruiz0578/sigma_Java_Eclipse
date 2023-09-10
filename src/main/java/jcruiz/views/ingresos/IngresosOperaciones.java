@@ -35,6 +35,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.github.lgooddatepicker.components.DatePicker;
 
@@ -59,7 +61,6 @@ public class IngresosOperaciones extends JPanel {
 	private JButton btnIngreso;
 	private JButton btnModificar;
 	private JButton btnReiscripcion;
-	private JButton btnEgreso;
 	private JPanel principal;
 	private JScrollPane scrollPane;
 	private JPanel content;
@@ -100,11 +101,10 @@ public class IngresosOperaciones extends JPanel {
 	private JTextField textLugarTrabajo;
 	private JComboBox<Object> comboSueldo;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
-	private JRadioButton rdbtnSI;
 	private JRadioButton rdbtnNO;
+	private JRadioButton rdbtnSI;
 	private JPanel botonesDireccion;
 	private JTextField textDireccionRep;
-	private JLabel lblNewLabel_7;
 	private JButton btnEliminar;
 	private JPanel superior;
 	private JLabel lblNewLabel_8;
@@ -124,29 +124,42 @@ public class IngresosOperaciones extends JPanel {
 	private JComboBox<Object> comboLateralidad;
 	private JComboBox<Object> comboSexoEst;
 	private JTextField textCedula;
+	private JLabel labelperiodoEscolar;
+	private JLabel labelEstatus;
 
 	public JPanel getPrincipal() {
 		return principal;
 	}
 
-	public IngresosOperaciones() {
+	public IngresosOperaciones(Ingresos ingresos, Boolean inscripcion) {
 
 		iniciarComponentes();
-		
+
 		Utilitario u = new Utilitario();
-		
-	//	String  prueba = Dashboard.periodoescolar;
-		
-		String  prueba = u.getPeriodoescolar();
-		
-		System.out.println("el periodo escolar es: "+ prueba);
-		
-				
 		u.llenar_plantel(comboPlantelProc);
 		u.llenar_estados(comboEstadoNac);
 
-		
-		
+		if (ingresos != null) {
+
+			btnReiscripcion.setEnabled(false);
+			btnReiscripcion.setEnabled(false);
+
+			if (!(inscripcion)) {
+				btnIngreso.setEnabled(false);
+			}
+
+			if (ingresos.getStatus().equals("E")) {
+				btnReiscripcion.setEnabled(true);
+			}
+
+			cargarCampos(ingresos);
+
+		} else {
+			btnReiscripcion.setEnabled(false);
+			btnEliminar.setEnabled(false);
+			btnModificar.setEnabled(false);
+		}
+
 		btnIngreso.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -170,35 +183,104 @@ public class IngresosOperaciones extends JPanel {
 
 			}
 		});
-		
-		
-		
-		rdbtnSI.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if (rdbtnSI.isSelected()) {
-
-		            String DIRECCION = textDireccionEst.getText();
-
-		            textDireccionRep.setText(DIRECCION);
-
-		        }else {
-		        	textDireccionRep.setText("");
-		        }
-			}
-		});
-
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 
 	}
+
+	private void cargarCampos(Ingresos ingresos) {
+		
+		textCedula.setText(ingresos.getCedulaestFormateada());
+		labelperiodoEscolar.setText(ingresos.getPeriodoescolar());
+		labelEstatus.setText(ingresos.getStatus());
+		textApellidosEst.setText(ingresos.getApellidosest());
+		textNombresEst.setText(ingresos.getNombresest());
+		comboSexoEst.setSelectedItem(ingresos.getSexoest());
+		comboLateralidad.setSelectedItem(ingresos.getLateralidad());
+
+		String fechaNacimiento = ingresos.getFnest().toString();
+		
+		dpFechaNac.setText(getStartDate(fechaNacimiento));
+		
+		comboOrdenNac.setSelectedItem(ingresos.getOrden_nac());
+		comboEstadoNac.setSelectedItem(ingresos.getEstado_nac());
+		textLugarNac.setText(ingresos.getLugar_nac());
+		comboEstadoCivil.setSelectedItem(ingresos.getEstado_civil());
+		comboMp.setSelectedItem(ingresos.getMateriapendiente());
+		comboCondicionEst.setSelectedItem(ingresos.getCondicionest());
+		comboAnoest.setSelectedItem(ingresos.getAnoest());
+		comboSeccion.setSelectedItem(ingresos.getSecion());
+		textEmail.setText(ingresos.getEmailest());
+		comboPlantelProc.setSelectedItem(ingresos.getNombre_plantel());
+		
+		int CedulaRep = ingresos.getCedularep();
+		
+		
+		DAORepresentantes dao = new DAORepresentantesImpl();
+		Representantes  representante = null;
+		try {
+			
+			representante = dao.getIdCed(CedulaRep);
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		
+		textCedularep.setText(representante.getCedulaestFormateada());
+		textApellidosRep.setText(representante.getApellidosrep());
+		textNombresRep.setText(representante.getNombresrep());
+		comboSexoRep.setSelectedItem(representante.getSexorep());
+		comboParentesco.setSelectedItem(representante.getParentescorep());
+		textEmailRep.setText(representante.getEmailrep());
+		textTelefonos.setText(representante.getTelefonosrep());
+		textDireccionRep.setText(representante.getDireccionrep());
+		comboTrabaja.setSelectedItem(representante.getTrabaja());
+		
+		String trabaja = representante.getTrabaja();
+		
+		
+		if (trabaja.equals("NO")) {
+			textLugarTrabajo.setVisible(false);
+			comboSueldo.setVisible(false);
+		}else {
+			textLugarTrabajo.setVisible(true);
+			comboSueldo.setVisible(true);
+			textLugarTrabajo.setText(representante.getLugartrabajo());
+			comboSueldo.setSelectedItem(representante.getSueldo());
+		}
+		
+		
+		
+		
+		System.out.println("tienen materia pendiente? : " + ingresos.getMateriapendiente());
+		
+		
+		
+		
+		
+			}
+	
+	
+	
+	
+	
+	private String getStartDate(String startDate)
+	{
+	    DateTimeFormatter inputFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	    DateTimeFormatter outputFormat = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+	    return LocalDate.parse(startDate, inputFormat).format(outputFormat);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	/* OPERACIONES */
 
@@ -303,25 +385,24 @@ public class IngresosOperaciones extends JPanel {
 		 * 
 		 * }
 		 */
-		
 
 		Estudiantes estudiante = new Estudiantes();
 
-		Double cedulaEst = Double.parseDouble(textCedula.getText());  
+		Double cedulaEst = Double.parseDouble(textCedula.getText());
 		String apellidosEst = textApellidosEst.getText().toUpperCase();
 		String nombresEst = textNombresEst.getText().toUpperCase();
 		String sexoest = (String) comboSexoEst.getSelectedItem();
-		String lateralidad = (String)comboLateralidad.getSelectedItem();
+		String lateralidad = (String) comboLateralidad.getSelectedItem();
 		String fechaNacimiento = dpFechaNac.getDateStringOrEmptyString();
 		int ordenNac = Integer.parseInt((String) comboOrdenNac.getSelectedItem());
-		String estadoNac = (String)comboEstadoNac.getSelectedItem();
+		String estadoNac = (String) comboEstadoNac.getSelectedItem();
 		String lugarNac = textLugarNac.getText().toUpperCase();
 		String estadoCivil = (String) comboEstadoCivil.getSelectedItem();
 		String direccionest = textDireccionEst.getText().toUpperCase();
 		String telefonosEst = textTelefonos.getText();
 		String emailest = textEmail.getText();
 		String nombrePlantel = (String) comboPlantelProc.getSelectedItem();
-		
+
 		estudiante.setCedulaest(cedulaEst);
 		estudiante.setApellidosest(apellidosEst);
 		estudiante.setNombresest(nombresEst);
@@ -350,7 +431,7 @@ public class IngresosOperaciones extends JPanel {
 		String trabajaRep = (String) comboTrabaja.getSelectedItem();
 		String lugarTrabajoRep = textLugarTrabajo.getText();
 		String sueldoRep = (String) comboSueldo.getSelectedItem();
-		
+
 		representante.setCedularep(cedulaRep);
 		representante.setApellidosrep(apellidosRep);
 		representante.setNombresrep(nombresRep);
@@ -363,29 +444,26 @@ public class IngresosOperaciones extends JPanel {
 		representante.setLugartrabajo(lugarTrabajoRep);
 		representante.setSueldo(sueldoRep);
 
-		
 		int cedularep = representante.getCedularep();
-		
+
 		Ingresos ingreso = new Ingresos();
 		String CedulaF = estudiante.getCedulaestFormateada();
-		
-		
+
 		String periodoescolar = (new Utilitario().getPeriodoescolar()).trim();
-		String id_ingreso =  periodoescolar + "-" + CedulaF + "I";
+		String id_ingreso = periodoescolar + "-" + CedulaF + "I";
 		String condicionEst = (String) comboCondicionEst.getSelectedItem();
 		String materiaPendiente = (String) comboMp.getSelectedItem();
 		String annoEst = (String) comboAnoest.getSelectedItem();
 		String seccionEst = (String) comboSeccion.getSelectedItem();
 		String fechaIngreso = dpFechaIngreso.getDateStringOrEmptyString();
-					
+
 		String mesIngreso = (new Utilitario().obtenerMesIngreso(fechaIngreso));
-		
+
 		String fechaSistema = LocalDate.now().toString();
 		String observacion = textObservaciones.getText().toUpperCase();
-		//String inscriptor =;
+		// String inscriptor =;
 		String ficha = textFicha.getText();
-		
-		
+
 		ingreso.setId_ingreso(id_ingreso);
 		ingreso.setPeriodoescolar(periodoescolar);
 		ingreso.setCedulaest(cedulaEst);
@@ -411,7 +489,7 @@ public class IngresosOperaciones extends JPanel {
 		String ubicacionVivienda = (String) comboUbicacionVivienda.getSelectedItem();
 		String condicionVivienda = (String) comboCondicionVivienda.getSelectedItem();
 		String condInfraestructura = (String) comboCondicionInfra.getSelectedItem();
-		
+
 		vivienda.setId_ingreso(id_ingreso);
 		vivienda.setTipovia(tipoVia);
 		vivienda.setDireccionest(direccionest);
@@ -421,32 +499,23 @@ public class IngresosOperaciones extends JPanel {
 		vivienda.setCondicionvivienda(condicionVivienda);
 		vivienda.setInfraestructura(condInfraestructura);
 
-	
-		
 		DAOEstudiantes est = new DAOEstudiantesImpl();
 		est.registrar(estudiante);
 
 		DAORepresentantes rep = new DAORepresentantesImpl();
-	 	rep.registrar(representante);
+		rep.registrar(representante);
 
 		DAOIngresos ing = new DAOIngresosImpl();
-	    ing.registrar(ingreso);
+		ing.registrar(ingreso);
 
 		DAOViviendas viv = new DAOViviendasImpl();
-	    viv.registrar(vivienda);
+		viv.registrar(vivienda);
 
 		JOptionPane.showMessageDialog(this, "EL ESTUDIANTE  FUE INGRESADO CORRECTAMENTE", "Registro..",
 				JOptionPane.INFORMATION_MESSAGE);
 
-	
-		
-		
 	}
 
-		
-	
-	
-	
 	private void calcularEdad() {
 
 		String fechaAjuste = "2023-09-01";
@@ -470,13 +539,6 @@ public class IngresosOperaciones extends JPanel {
 		textEdad.setText(edad);
 
 	}
-	
-	
-	
-	
-	
-	
-	
 
 	private void iniciarComponentes() {
 		setBorder(null);
@@ -493,28 +555,35 @@ public class IngresosOperaciones extends JPanel {
 		botonera.setLayout(new GridLayout(1, 0, 0, 0));
 
 		btnIngreso = new JButton("Ingresar");
+		btnIngreso.setVerticalTextPosition(SwingConstants.BOTTOM);
+		btnIngreso.setVerticalAlignment(SwingConstants.TOP);
+		btnIngreso.setHorizontalTextPosition(SwingConstants.CENTER);
 		btnIngreso.setIconTextGap(1);
 
 		btnIngreso.setIcon(new ImageIcon(IngresosOperaciones.class.getResource("/Imagenes/46.png")));
 		botonera.add(btnIngreso);
 
 		btnModificar = new JButton("Modificar");
+		btnModificar.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnModificar.setVerticalAlignment(SwingConstants.TOP);
+		btnModificar.setVerticalTextPosition(SwingConstants.BOTTOM);
 
 		btnModificar.setIconTextGap(1);
 		btnModificar.setIcon(new ImageIcon(IngresosOperaciones.class.getResource("/Imagenes/44.png")));
 		botonera.add(btnModificar);
 
 		btnReiscripcion = new JButton("ReInscribir");
+		btnReiscripcion.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnReiscripcion.setVerticalAlignment(SwingConstants.TOP);
+		btnReiscripcion.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnReiscripcion.setIconTextGap(1);
 		btnReiscripcion.setIcon(new ImageIcon(IngresosOperaciones.class.getResource("/Imagenes/48.png")));
 		botonera.add(btnReiscripcion);
 
-		btnEgreso = new JButton("Egresar");
-		btnEgreso.setIconTextGap(1);
-		btnEgreso.setIcon(new ImageIcon(IngresosOperaciones.class.getResource("/Imagenes/126.png")));
-		botonera.add(btnEgreso);
-
 		btnEliminar = new JButton("Eliminar");
+		btnEliminar.setHorizontalTextPosition(SwingConstants.CENTER);
+		btnEliminar.setVerticalAlignment(SwingConstants.TOP);
+		btnEliminar.setVerticalTextPosition(SwingConstants.BOTTOM);
 		btnEliminar.setIconTextGap(1);
 		btnEliminar.setIcon(new ImageIcon(IngresosOperaciones.class.getResource("/Imagenes/116.png")));
 		botonera.add(btnEliminar);
@@ -532,10 +601,10 @@ public class IngresosOperaciones extends JPanel {
 		scrollPane.setViewportView(content);
 		GridBagLayout gbl_content = new GridBagLayout();
 		gbl_content.columnWidths = new int[] { 150, 150, 91, 70, 100 };
-		gbl_content.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		gbl_content.rowHeights = new int[] { 72, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				2 };
 		gbl_content.columnWeights = new double[] { 1.0, 0.0, 1.0, 0.0, 1.0 };
-		gbl_content.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+		gbl_content.rowWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
 				0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, Double.MIN_VALUE };
 		content.setLayout(gbl_content);
 
@@ -556,11 +625,38 @@ public class IngresosOperaciones extends JPanel {
 		btnBuscar = new JButton("Buscar");
 		btnBuscar.setIcon(new ImageIcon(IngresosOperaciones.class.getResource("/Imagenes/16.png")));
 		GridBagConstraints gbc_btnBuscar = new GridBagConstraints();
-		gbc_btnBuscar.anchor = GridBagConstraints.WEST;
+		gbc_btnBuscar.anchor = GridBagConstraints.SOUTHWEST;
 		gbc_btnBuscar.insets = new Insets(0, 0, 5, 5);
 		gbc_btnBuscar.gridx = 1;
 		gbc_btnBuscar.gridy = 0;
 		content.add(btnBuscar, gbc_btnBuscar);
+
+		labelEstatus = new JLabel("status");
+		labelEstatus.setHorizontalAlignment(SwingConstants.CENTER);
+		labelEstatus.setHorizontalTextPosition(SwingConstants.CENTER);
+		labelEstatus.setBorder(new TitledBorder(null, "Status", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		labelEstatus.setFont(new Font("Dialog", Font.BOLD, 38));
+		GridBagConstraints gbc_labelEstatus = new GridBagConstraints();
+		gbc_labelEstatus.anchor = GridBagConstraints.SOUTH;
+		gbc_labelEstatus.fill = GridBagConstraints.HORIZONTAL;
+		gbc_labelEstatus.insets = new Insets(0, 0, 5, 5);
+		gbc_labelEstatus.gridx = 2;
+		gbc_labelEstatus.gridy = 0;
+		content.add(labelEstatus, gbc_labelEstatus);
+
+		labelperiodoEscolar = new JLabel("Periodo Esc");
+		labelperiodoEscolar.setHorizontalTextPosition(SwingConstants.RIGHT);
+		labelperiodoEscolar.setVerticalTextPosition(SwingConstants.BOTTOM);
+		labelperiodoEscolar.setForeground(new Color(224, 27, 36));
+		labelperiodoEscolar.setFont(new Font("Dialog", Font.BOLD, 22));
+		GridBagConstraints gbc_labelperiodoEscolar = new GridBagConstraints();
+		gbc_labelperiodoEscolar.fill = GridBagConstraints.VERTICAL;
+		gbc_labelperiodoEscolar.anchor = GridBagConstraints.EAST;
+		gbc_labelperiodoEscolar.gridwidth = 2;
+		gbc_labelperiodoEscolar.insets = new Insets(0, 0, 5, 0);
+		gbc_labelperiodoEscolar.gridx = 3;
+		gbc_labelperiodoEscolar.gridy = 0;
+		content.add(labelperiodoEscolar, gbc_labelperiodoEscolar);
 
 		textApellidosEst = new JTextField();
 		textApellidosEst.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -606,7 +702,7 @@ public class IngresosOperaciones extends JPanel {
 		comboLateralidad = new JComboBox<Object>();
 		comboLateralidad.setBackground(new Color(255, 255, 255));
 		comboLateralidad.setModel(
-				new DefaultComboBoxModel<Object>(new String[] { "N/A", "Derecho(a)", "Zurdo(a)", "Ambidiestro(a)" }));
+				new DefaultComboBoxModel<Object>(new String[] {"N/A", "D", "Z", "A"}));
 		comboLateralidad.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Lateralidad:",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		GridBagConstraints gbc_comboLateralidad = new GridBagConstraints();
@@ -659,7 +755,7 @@ public class IngresosOperaciones extends JPanel {
 
 		comboEstadoNac = new JComboBox<Object>();
 		comboEstadoNac.setBackground(new Color(255, 255, 255));
-		comboEstadoNac.setModel(new DefaultComboBoxModel<Object>(new String[] {"N/A"}));
+		comboEstadoNac.setModel(new DefaultComboBoxModel<Object>(new String[] { "N/A" }));
 		comboEstadoNac.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Estado Nac.:",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		GridBagConstraints gbc_comboEstadoNac = new GridBagConstraints();
@@ -690,7 +786,7 @@ public class IngresosOperaciones extends JPanel {
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		GridBagConstraints gbc_comboEstadoCivil = new GridBagConstraints();
 		gbc_comboEstadoCivil.gridwidth = 2;
-		gbc_comboEstadoCivil.insets = new Insets(0, 0, 5, 5);
+		gbc_comboEstadoCivil.insets = new Insets(0, 0, 5, 0);
 		gbc_comboEstadoCivil.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboEstadoCivil.gridx = 3;
 		gbc_comboEstadoCivil.gridy = 3;
@@ -758,20 +854,19 @@ public class IngresosOperaciones extends JPanel {
 		gbc_textEmail.gridx = 0;
 		gbc_textEmail.gridy = 5;
 		content.add(textEmail, gbc_textEmail);
-		
-				comboPlantelProc = new JComboBox<Object>();
-				comboPlantelProc.setModel(
-						new DefaultComboBoxModel<Object>(new String[] {"N/A"}));
-				comboPlantelProc.setBackground(new Color(255, 255, 255));
-				comboPlantelProc.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Plantel de Procedencia",
-						TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
-				GridBagConstraints gbc_comboPlantelProc = new GridBagConstraints();
-				gbc_comboPlantelProc.gridwidth = 3;
-				gbc_comboPlantelProc.insets = new Insets(0, 0, 5, 5);
-				gbc_comboPlantelProc.fill = GridBagConstraints.HORIZONTAL;
-				gbc_comboPlantelProc.gridx = 1;
-				gbc_comboPlantelProc.gridy = 5;
-				content.add(comboPlantelProc, gbc_comboPlantelProc);
+
+		comboPlantelProc = new JComboBox<Object>();
+		comboPlantelProc.setModel(new DefaultComboBoxModel<Object>(new String[] { "N/A" }));
+		comboPlantelProc.setBackground(new Color(255, 255, 255));
+		comboPlantelProc.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Plantel de Procedencia",
+				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		GridBagConstraints gbc_comboPlantelProc = new GridBagConstraints();
+		gbc_comboPlantelProc.gridwidth = 3;
+		gbc_comboPlantelProc.insets = new Insets(0, 0, 5, 5);
+		gbc_comboPlantelProc.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboPlantelProc.gridx = 1;
+		gbc_comboPlantelProc.gridy = 5;
+		content.add(comboPlantelProc, gbc_comboPlantelProc);
 
 		lblNewLabel_4 = new JLabel("                                       ");
 		GridBagConstraints gbc_lblNewLabel_4 = new GridBagConstraints();
@@ -828,7 +923,7 @@ public class IngresosOperaciones extends JPanel {
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		GridBagConstraints gbc_comboZonaUbicacion = new GridBagConstraints();
 		gbc_comboZonaUbicacion.gridwidth = 2;
-		gbc_comboZonaUbicacion.insets = new Insets(0, 0, 5, 5);
+		gbc_comboZonaUbicacion.insets = new Insets(0, 0, 5, 0);
 		gbc_comboZonaUbicacion.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboZonaUbicacion.gridx = 3;
 		gbc_comboZonaUbicacion.gridy = 8;
@@ -962,7 +1057,7 @@ public class IngresosOperaciones extends JPanel {
 		content.add(textNombresRep, gbc_textNombresRep);
 
 		comboSexoRep = new JComboBox<Object>();
-		comboSexoRep.setModel(new DefaultComboBoxModel<Object>(new String[] {"N/A", "F", "M"}));
+		comboSexoRep.setModel(new DefaultComboBoxModel<Object>(new String[] { "N/A", "F", "M" }));
 		comboSexoRep.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Sexo:", TitledBorder.LEADING,
 				TitledBorder.TOP, null, new Color(51, 51, 51)));
 		comboSexoRep.setBackground(Color.WHITE);
@@ -1013,6 +1108,24 @@ public class IngresosOperaciones extends JPanel {
 		content.add(textEmailRep, gbc_textEmailRep);
 
 		comboTrabaja = new JComboBox<Object>();
+		comboTrabaja.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String trabaja = (String) comboTrabaja.getSelectedItem();
+				
+				
+				if (trabaja.equals("SI")) {
+					textLugarTrabajo.setVisible(true);
+					comboSueldo.setVisible(true);
+					
+				}else {
+					textLugarTrabajo.setVisible(false);
+					comboSueldo.setVisible(false);
+									}
+				
+				
+			}
+		});
 		comboTrabaja.setModel(new DefaultComboBoxModel<Object>(new String[] { "N/A", "NO", "SI" }));
 		comboTrabaja.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Trabaja:?",
 				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
@@ -1044,7 +1157,7 @@ public class IngresosOperaciones extends JPanel {
 		comboSueldo.setBackground(Color.WHITE);
 		GridBagConstraints gbc_comboSueldo = new GridBagConstraints();
 		gbc_comboSueldo.gridwidth = 2;
-		gbc_comboSueldo.insets = new Insets(0, 0, 5, 5);
+		gbc_comboSueldo.insets = new Insets(0, 0, 5, 0);
 		gbc_comboSueldo.fill = GridBagConstraints.HORIZONTAL;
 		gbc_comboSueldo.gridx = 3;
 		gbc_comboSueldo.gridy = 17;
@@ -1060,39 +1173,34 @@ public class IngresosOperaciones extends JPanel {
 		gbc_botonesDireccion.gridx = 0;
 		gbc_botonesDireccion.gridy = 18;
 		content.add(botonesDireccion, gbc_botonesDireccion);
-		GridBagLayout gbl_botonesDireccion = new GridBagLayout();
-		gbl_botonesDireccion.columnWidths = new int[] { 0, 0, 0, 0 };
-		gbl_botonesDireccion.rowHeights = new int[] { 0, 0 };
-		gbl_botonesDireccion.columnWeights = new double[] { 0.0, 0.0, 0.0, Double.MIN_VALUE };
-		gbl_botonesDireccion.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
-		botonesDireccion.setLayout(gbl_botonesDireccion);
-
-		rdbtnNO = new JRadioButton("NO");
-		rdbtnNO.setBackground(new Color(255, 255, 255));
-		GridBagConstraints gbc_rdbtnNO = new GridBagConstraints();
-		gbc_rdbtnNO.fill = GridBagConstraints.HORIZONTAL;
-		gbc_rdbtnNO.insets = new Insets(0, 0, 0, 5);
-		gbc_rdbtnNO.gridx = 0;
-		gbc_rdbtnNO.gridy = 0;
-		botonesDireccion.add(rdbtnNO, gbc_rdbtnNO);
-		buttonGroup.add(rdbtnNO);
-
-		lblNewLabel_7 = new JLabel("       ");
-		GridBagConstraints gbc_lblNewLabel_7 = new GridBagConstraints();
-		gbc_lblNewLabel_7.insets = new Insets(0, 0, 0, 5);
-		gbc_lblNewLabel_7.gridx = 1;
-		gbc_lblNewLabel_7.gridy = 0;
-		botonesDireccion.add(lblNewLabel_7, gbc_lblNewLabel_7);
 
 		rdbtnSI = new JRadioButton("SI");
-				rdbtnSI.setBackground(new Color(255, 255, 255));
-		rdbtnSI.setHorizontalAlignment(SwingConstants.RIGHT);
-		GridBagConstraints gbc_rdbtnSI = new GridBagConstraints();
-		gbc_rdbtnSI.anchor = GridBagConstraints.EAST;
-		gbc_rdbtnSI.gridx = 2;
-		gbc_rdbtnSI.gridy = 0;
-		botonesDireccion.add(rdbtnSI, gbc_rdbtnSI);
+		rdbtnSI.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+
+				if (rdbtnSI.isSelected()) {
+
+					String DIRECCION = textDireccionEst.getText();
+
+					textDireccionRep.setText(DIRECCION);
+
+				} else {
+					textDireccionRep.setText("");
+				}
+
+			}
+		});
+		botonesDireccion.setLayout(new GridLayout(0, 3, 0, 0));
+		rdbtnSI.setBackground(new Color(255, 255, 255));
+		botonesDireccion.add(rdbtnSI);
 		buttonGroup.add(rdbtnSI);
+
+		rdbtnNO = new JRadioButton("NO");
+
+		rdbtnNO.setBackground(new Color(255, 255, 255));
+		rdbtnNO.setHorizontalAlignment(SwingConstants.RIGHT);
+		botonesDireccion.add(rdbtnNO);
+		buttonGroup.add(rdbtnNO);
 
 		textDireccionRep = new JTextField();
 		textDireccionRep.setFont(new Font("Dialog", Font.BOLD, 13));
@@ -1196,7 +1304,8 @@ public class IngresosOperaciones extends JPanel {
 
 		dpFechaIngreso = new DatePicker();
 		dpFechaIngreso.setBackground(new Color(255, 255, 255));
-		dpFechaIngreso.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "FECHA DE INGRESO:", TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
+		dpFechaIngreso.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "FECHA DE INGRESO:",
+				TitledBorder.LEADING, TitledBorder.TOP, null, new Color(51, 51, 51)));
 		panel.add(dpFechaIngreso);
 
 		superior = new JPanel();
@@ -1204,7 +1313,5 @@ public class IngresosOperaciones extends JPanel {
 		superior.setLayout(new GridLayout(1, 0, 0, 0));
 
 	}
-
-	
 
 }
